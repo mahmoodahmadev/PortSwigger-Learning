@@ -27,13 +27,6 @@
 - **script-src https://scripts.normal-website.com**: This directive will allow
   scripts form specified source.
 
-## Lab Summary
-
-- Lab name:
-- Objective:
-- Steps taken:
-- Outcome:
-
 ## Vulnerabilities & Exploits
 
 - Use of public sources for scripts/images cna lead to xss.

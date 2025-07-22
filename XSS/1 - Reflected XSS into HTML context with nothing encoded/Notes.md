@@ -6,7 +6,10 @@
 
 ## Key Concepts:
 
-- Reflective XSS
+- Understanding how to find and exploit reflected XSS vulnerabilities in web applications
+- Learn how to manipulate HTML context to execute JavaScript
+- Identify and use input fields to inject XSS payloads
+- Understand the importance of viewing page source and inspecting elements
 
 ## Steps Taken:
 

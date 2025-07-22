@@ -6,21 +6,25 @@
 
 ## Key Concepts:
 
+- Understand how `document.write` can lead to DOM-based XSS vulnerabilities.
+- Use `location.search` as a source to inject payloads.
+- Learn how to manipulate the DOM using `document.write`.
+
 ## Steps Taken:
 
-- Open the target website.
-- View page source code for all the endpoints of the target application.
-- Observe that no inline, internal javascript can be found.
-- Find any input field where you can inject a POC payload.
-- Found a search input field on the main screen.
-- View page source code.
-- Observe that there is a script tag which generates an **img** tag and appends
+1. Open the target website.
+2. View page source code for all the endpoints of the target application.
+3. Observe that no inline, internal javascript can be found.
+4. Find any input field where you can inject a POC payload.
+5. Found a search input field on the main screen.
+6. View page source code.
+7. Observe that there is a script tag which generates an **img** tag and appends
   the query value next to its **src** attribute.
   ![](./Images/Search%20script.png)
-- Understand the context where and how the query is appended.
-- Prepare a payload acccording to the context and pass in the search query in
+8. Understand the context where and how the query is appended.
+9. Prepare a payload acccording to the context and pass in the search query in
   URL or in search field.
-- The lab is solved.
+10. The lab is solved.
 
 ## Payloads Used:
 

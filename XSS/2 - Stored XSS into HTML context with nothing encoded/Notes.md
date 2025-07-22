@@ -6,7 +6,10 @@
 
 ## Key Concepts:
 
-- Stored XSS.
+- Understand how stored XSS works in the context of a web application.
+- Learn how to identify and exploit stored XSS vulnerabilities.
+- Gain experience in submitting malicious payloads through input fields.
+- Understand the importance of testing and validating user input.
 
 ## Steps Taken:
 

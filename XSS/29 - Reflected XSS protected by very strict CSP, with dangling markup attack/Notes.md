@@ -7,8 +7,9 @@
 
 ## Key Concepts:
 
-- CSRF tokens
-- Dangling markup
+- Use reflected XSS to deliver the exploit to the victim.
+- Use dangling markup attack to bypass the CSP and submit a form with the csrf token of victim to change the email of victim.
+- The lab is protected by a very strict Content Security Policy (CSP) that prevents inline scripts and external scripts from executing, but it is vulnerable to a reflected XSS attack that allows the attacker to deliver a payload that can exploit the CSP.
 
 ## Steps Taken:
 

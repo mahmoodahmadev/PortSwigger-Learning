@@ -13,7 +13,9 @@
 1. Load the target website.
 2. View page source code.
 3. Observe that there is a canonical tag in the `<head>` tag.
-   ![](./Images/canonical%20tag%20in%20source%20code.png)
+
+![](./Images/canonical%20tag%20in%20source%20code.png)
+
 4. Add a mock string after `?` in the URL so that `URL` wont break and browser will think that form this point, queries are getting inserting.
 5. Insert the **payload 1** next to the target website `URL`.
 6. the lab is solved.

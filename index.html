@@ -6,8 +6,10 @@
     <title>Document</title>
   </head>
   <body>
-    <a custom='&apos; href=&apos;javascript:alert()'>something</a>
+    <a custom="' href='javascript:alert()">something</a>
 
-
+    <input id=x
+    ng-focus=$event.composedPath()|orderBy:'(z=alert)(document.cookie)'/> <input
+    id=x ng-focus=$event.composedPath()|orderBy:'(z=alert)(document.cookie)'>
   </body>
 </html>

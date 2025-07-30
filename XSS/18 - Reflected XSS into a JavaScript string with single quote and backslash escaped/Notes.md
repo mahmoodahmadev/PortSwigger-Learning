@@ -28,7 +28,9 @@
 6. As the single quotes are escaped through backslash, close the script tag first.
 7. The browser first renders HTML and then where script tag starts, it starts processing everything as JavaScript until it encounters `</script>` tag.
 8. Submit the payload.
-9. The lab is solved.
+9. the payload break out of the script tag and executes the `alert` method.
+   ![](./Images/script%20broke%20after%20payload%20injection.png)
+10. The lab is solved.
 
 ## Payloads Used:
 

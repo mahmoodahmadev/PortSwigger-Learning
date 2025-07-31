@@ -1,13 +1,4 @@
-<svg>
-  <a>
-    <animate attributeName="href" values="javascript:alert()" />
-    <text x="20" y="20">Click me</text>
-  </a>
-</svg>
-
-<svg>
-  <a>
-    <animate attributeName="href" values="javascript:alert(1)" />
-    <text x="20" y="20">Click me</text>
-  </a>
-</svg>
+<a
+  href="javascript:fetch('/analytics', {method:'post',body:'/post%3fpostId%3d5'}).finally(_ => window.location = '/')"
+  >Back to Blog</a
+>

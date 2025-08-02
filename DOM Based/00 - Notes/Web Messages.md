@@ -3,9 +3,8 @@
 A Web Message refers to a mechanism for secure communication between different browsing contexts, such as:
 
 - Between an iframe and its parent
-
+- Between an iframe and its src website.
 - Between a popup and its opener
-
 - Between different tabs (if explicitly allowed)
 
 This is done using the `window.postMessage()` API, which is part of the HTML5 Web Messaging specification.

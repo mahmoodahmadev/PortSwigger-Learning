@@ -30,7 +30,7 @@ Cookies themselves are not inherently dangerous, but problems arise when:
 
 - Occurs when **client-side JavaScript** writes attacker-controlled data into a cookie.
 - This makes cookies,normally safe,vulnerable to attack.
-- The attacker crafts a URL that sets **arbitrary cookie values** when visited.
+- The attacker crafts a `URL` that sets **arbitrary cookie values** when visited.
 
 ---
 
@@ -41,17 +41,19 @@ Cookies themselves are not inherently dangerous, but problems arise when:
 
 ---
 
-### 📌 Example: Writing Attacker-Controlled Data to a Cookie
+### Example: Writing Attacker-Controlled Data to a Cookie
 
 ```js
 // JavaScript vulnerable to DOM-based manipulation
 document.cookie = location.hash;
 ```
-💣 Example: XSS Payload to Manipulate Cookie
+**Example:** 
+
+XSS Payload to Manipulate Cookie
 ```
 https://site.com/#<script>document.cookie='session=attackerSessionId'</script>
 ```
-- User visits URL → Malicious script runs
+- User visits `URL` → Malicious script runs
 
 - Script sets new cookie → e.g., session=attackerSessionId
 

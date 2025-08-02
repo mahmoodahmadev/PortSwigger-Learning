@@ -4,16 +4,18 @@
 
 **Cookies** are small pieces of data stored on the user's browser by a website.
 They are commonly used for:
-  - Session management (e.g., login tokens)
-  - Personalization (e.g., language or theme)
-  - Tracking (e.g., analytics or ads)
+
+- Session management (e.g., login tokens)
+- Personalization (e.g., language or theme)
+- Tracking (e.g., analytics or ads)
 
 ### Example Cookie:
 
-```html
-session_id=abc123; path=/; HttpOnly; Secure
+```javascript
+session_id=abc123;
+path=/;
+HttpOnly; Secure
 ```
-
 
 ## How Cookies Can Be Exploited
 
@@ -22,7 +24,6 @@ Cookies themselves are not inherently dangerous, but problems arise when:
 1. Cookies are set using untrusted client-side data
 2. Cookies are reflected unsafely into the page
 3. Cookies can be stolen via XSS
-
 
 ## DOM-Based Cookie Manipulation
 
@@ -47,12 +48,15 @@ Cookies themselves are not inherently dangerous, but problems arise when:
 // JavaScript vulnerable to DOM-based manipulation
 document.cookie = location.hash;
 ```
-**Example:** 
+
+**Example:**
 
 XSS Payload to Manipulate Cookie
-```
+
+```javascrip
 https://site.com/#<script>document.cookie='session=attackerSessionId'</script>
 ```
+
 - User visits `URL` → Malicious script runs
 
 - Script sets new cookie → e.g., session=attackerSessionId
@@ -60,6 +64,7 @@ https://site.com/#<script>document.cookie='session=attackerSessionId'</script>
 ### Exploitation Scenarios
 
 **Session Fixation**
+
 - Attacker sets a known session ID in the victim's browser
 
 - Hijacks that session on the server

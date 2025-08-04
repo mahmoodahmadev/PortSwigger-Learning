@@ -61,7 +61,7 @@ If an application listens to `postMessage()` without checking the sender origin:
 
 ```javascript
 window.addEventListener('message', event => {
-  eval(event.data); // ❌ extremely dangerous
+  eval(event.data); //  extremely dangerous
 });
 ```
 
@@ -70,3 +70,84 @@ An attacker could open the vulnerable site in an iframe and send:
 ```javascript
 frame.postMessage("alert('XSS')", '*');
 ```
+
+## CHEATSHEET
+
+#### Parent → Iframe:
+
+```javascript
+document
+  .getElementById('myIframe')
+  .contentWindow.postMessage('Message from Parent', '*');
+```
+
+#### Iframe → Parent:
+
+```javascript
+window.parent.postMessage('Message from Iframe', 'https://parent-website.com');
+```
+
+#### Iframe → Second Website (Inside Iframe):
+
+```javascript
+document
+  .getElementById('myIframe')
+  .contentWindow.postMessage('Message from Iframe to Second Website', '*');
+```
+
+#### Second Website → Iframe:
+
+```javascript
+window.parent.postMessage(
+  'Message from Second Website to Iframe',
+  'https://iframe-website.com'
+);
+```
+
+#### Listen for Message in Parent:
+
+```javascript
+window.addEventListener(
+  'message',
+  e => {
+    if (e.origin === 'https://iframe-website.com') console.log(e.data);
+  },
+  false
+);
+```
+
+#### Listen for Message in Iframe:
+
+```javascript
+window.addEventListener(
+  'message',
+  e => {
+    if (e.origin === 'https://parent-website.com') console.log(e.data);
+  },
+  false
+);
+```
+
+#### Listen for Message in Second Website (Inside Iframe):
+
+```javascript
+window.addEventListener(
+  'message',
+  e => {
+    if (e.origin === 'https://iframe-website.com') console.log(e.data);
+  },
+  false
+);
+```
+
+#### Send a Reply:
+
+```javascript
+event.source.postMessage('Reply from Iframe/Website', event.origin);
+```
+
+### Important Notes:
+
+- Always check event.origin to ensure messages come from trusted sources.
+
+- Use '\*' as the target origin for broad communication, but prefer specific origins for security.

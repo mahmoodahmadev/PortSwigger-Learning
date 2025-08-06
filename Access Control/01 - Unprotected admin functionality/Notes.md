@@ -1,4 +1,4 @@
-# LAB: Reflected XSS into HTML context with nothing encoded
+# LAB: Unprotected admin functionality
 
 ## Objective:
 

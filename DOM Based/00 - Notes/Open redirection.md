@@ -12,7 +12,7 @@ if (url) {
 }
 ```
 
-An attacker can craft a `URL` that, when visited, causes the browser to redirect to an arbitrary external domain.
+An attacker can craft `URL` that, when visited, causes the browser to redirect to an arbitrary external domain.
 
 ## Impact
 

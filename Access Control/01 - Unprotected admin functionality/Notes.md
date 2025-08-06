@@ -6,6 +6,8 @@
 
 ## Key Concepts:
 
+- `robots.txt` file can include some useful endpoints that can hold critical information.
+
 ## Steps Taken:
 
 1. Load the target website.

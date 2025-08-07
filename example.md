@@ -1,4 +1,4 @@
-# LAB:
+# LAB: Reflected XSS into HTML context with nothing encoded
 
 ## Objective:
 
@@ -6,9 +6,12 @@
 
 ## Steps Taken:
 
+
 ## Payloads Used:
 
+
 ## Issues Encountered:
+
 
 ## Solutions/Workarounds:
 

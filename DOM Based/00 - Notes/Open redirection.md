@@ -12,11 +12,11 @@ if (url) {
 }
 ```
 
-An attacker can craft a `URL` that, when visited, causes the browser to redirect to an arbitrary external domain.
+An attacker can craft `URL` that, when visited, causes the browser to redirect to an arbitrary external domain.
 
 ## Impact
 
-- **Phishing Attacks:** Attackers can use authentic-looking `URLs` to trick users, leveraging the website's domain and valid `TLS` certificate for credibility.
+- **Phishing Attack:** Attackers can use authentic-looking `URLs` to trick users, leveraging the website's domain and valid `TLS` certificate for credibility.
 - **JavaScript Injection:** If the attacker controls the start of the string passed to the redirection API, they may escalate the vulnerability to JavaScript injection using the `javascript:` pseudo-protocol.
 
 ## Common Sinks Leading to DOM-Based Open Redirection

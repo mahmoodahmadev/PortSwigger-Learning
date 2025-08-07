@@ -2,9 +2,13 @@
 
 ## Objective:
 
-- Set the `roleid = 2` for the given user `wiener: peter` to access the `/admin` page and delete the user `Carlos`.
+- Escalate privileges by setting `roleid = 2` for the user `wiener:peter` to gain admin access and delete the user `Carlos`.
 
 ## Key Concepts:
+- **Insecure Direct Object Reference (IDOR):** The server trusts user-supplied data in the profile update request, allowing privilege escalation.
+- **AJAX Requests:** Profile updates are handled via AJAX, sending JSON payloads to the backend.
+- **Parameter Tampering:** Additional parameters (like `roleid`) can be injected into requests if not properly validated server-side.
+- **Burp Suite Proxy:** Essential for intercepting and modifying HTTP requests/responses.
 
 ## Steps Taken:
 
@@ -39,10 +43,12 @@
 
 ## Solutions/Workarounds:
 
-- Used Burp proxy to find all the API calls.
+- Used Burp Suite Proxy to capture and analyze all API calls, including those not visible in the browser's developer tools.
 
 ## Takeaways:
 
-- Always explore the application by using the networks tab to monitor any useful API calls.
-- Use Burp Proxy to catch all the calls that are not sustained and visible in browser networks tab.
-- Always check request & response of each API call to find any additional parameters that can be manipulated.
+- **Always inspect network traffic** for hidden or undocumented API endpoints.
+- **Use interception proxies** (like Burp Suite) to uncover and manipulate requests not visible in browser tools.
+- **Test for parameter tampering** by adding or modifying parameters in API requests.
+- **Privilege escalation vulnerabilities** can often be found in poorly validated profile update endpoints.
+- **Thoroughly review request/response pairs** for any fields that can be abused for privilege escalation.

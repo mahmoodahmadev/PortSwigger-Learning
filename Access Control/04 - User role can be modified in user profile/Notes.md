@@ -17,16 +17,26 @@
 3. Login with given credentials `wiener: peter`.
 4. Open networks tab and update the account email.
 5. Observe that there is a **_changeEmail.js_** file which send an `AJAX` request and returns a `json` response.
+6. 
    ![](./Images/changeEmail.JS.png)
-6. **Proxy** the traffic in **Burp Suite** and update the account email.
-7. Analyze the reponse of the _change-email_ `POST` request response.
+
+
+7. **Proxy** the traffic in **Burp Suite** and update the account email.
+8. Analyze the reponse of the _change-email_ `POST` request response.
+9. 
    ![](./Images/change-email%20POST%20request%20response.png)
-8. As the **_changeEmail.js_** file submits the whole formData to the server, we can pass other data as well to update.
-9. Update the request payload to not only include the email but also set the `roleid =2`.
+
+
+10. As the **_changeEmail.js_** file submits the whole formData to the server, we can pass other data as well to update.
+11. Update the request payload to not only include the email but also set the `roleid =2`.
+   
+   
    ![](./Images/request%20json.png)
-10. Submit the request.
-11. Observe the response that `email` and `roleid` both are changed.
-12. The lab is solved.
+
+
+12. Submit the request.
+13. Observe the response that `email` and `roleid` both are changed.
+14. The lab is solved.
 
 ## Payloads Used:
 

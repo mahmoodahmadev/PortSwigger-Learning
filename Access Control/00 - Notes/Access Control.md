@@ -1,4 +1,3 @@
-
 # Access Control Vulnerabilities and Privilege Escalation
 
 ## What is Access Control?
@@ -6,6 +5,7 @@
 Access control is the process of defining **who or what is allowed** to access or perform actions on specific resources.
 
 ### It involves:
+
 - **Authentication**: Verifying the user's identity.
 - **Session Management**: Maintaining the identity across requests.
 - **Access Control**: Deciding whether the authenticated user is authorized for the requested action.
@@ -19,14 +19,17 @@ Broken access control occurs when users can perform actions they shouldn't be al
 ### Types of Access Control
 
 #### 1. **Vertical Access Control**
+
 - Restricts access to **functions** based on user roles.
 - Example: Admins can delete users; normal users cannot.
 
 #### 2. **Horizontal Access Control**
+
 - Restricts access to **resources** based on ownership.
 - Example: A user can only view their own bank account, not others'.
 
 #### 3. **Context-Dependent Access Control**
+
 - Access depends on **application state** or **workflow**.
 - Example: Modifying a shopping cart is disabled after payment.
 
@@ -35,15 +38,18 @@ Broken access control occurs when users can perform actions they shouldn't be al
 ## Examples of Broken Access Controls
 
 ### Vertical Privilege Escalation
+
 - A lower-privileged user gains **admin-level access**.
 - **Example**:
   ```text
   User accesses: https://insecure-website.com/admin
   ```
 
-### Unprotected Functionality
+##### Unprotected URLs
+
 - Sensitive URLs are not protected.
 - **Example**:
+
   ```text
   Found via: https://insecure-website.com/robots.txt
   ```
@@ -56,7 +62,8 @@ Broken access control occurs when users can perform actions they shouldn't be al
   - JavaScript files
   - Wordlist brute-forcing
 
-### Parameter-based Access Control
+##### Parameter-based Access Control
+
 - Role stored in:
   - Query parameters
   - Cookies
@@ -67,9 +74,11 @@ Broken access control occurs when users can perform actions they shouldn't be al
   https://insecure-website.com/login/home.jsp?role=1
   ```
 
-### Platform Misconfiguration
+##### Platform Misconfiguration
+
 - Access control enforced via platform config can be bypassed.
 - **Example (header injection)**:
+
   ```http
   POST / HTTP/1.1
   X-Original-URL: /admin/deleteUser
@@ -77,19 +86,69 @@ Broken access control occurs when users can perform actions they shouldn't be al
 
 - **HTTP method bypass**: GET instead of POST might work.
 
-### URL-Matching Discrepancies
+##### URL-Matching Discrepancies
+
 - Case sensitivity:
-  ```text
+  ```http
   /ADMIN/DELETEUSER vs /admin/deleteUser
   ```
 - Trailing slash:
-  ```text
+  ```http
   /admin/deleteUser/ vs /admin/deleteUser
   ```
-- Spring's `useSuffixPatternMatch` allows:
-  ```text
-  /admin/deleteUser.anything
+- Spring framework `useSuffixPatternMatch` which is turned on by default before `v5.3`:
+
+  ```http
+  /admin/deleteUser.anything same as /admin/deleteUser
   ```
+
+  When testing for URL matching discrepancies, try all combinations:
+
+- Change case (ADMIN vs admin)
+
+```http
+/ADMIN/DELETEUSER?username=carlos
+/Admin/DeleteUser?username=carlos
+```
+
+- Add trailing slash
+
+```http
+/admin/deleteUser/?username=carlos
+```
+
+- Add double slash
+
+```http
+/admin//deleteUser?username=carlos
+```
+
+- Add file extension
+
+```http
+/admin/deleteUser.jpg?username=carlos
+/admin/deleteUser.json?username=carlos
+```
+
+- Add backslash
+
+```http
+/admin\deleteUser?username=carlos
+```
+
+- Use URL encoding
+
+```http
+/admin%2FdeleteUser?username=carlos
+/admin/%64eleteUser?username=carlos    # %64 = 'd'
+```
+
+- Use dot segments (/./ or /../)
+
+```http
+/admin/./deleteUser?username=carlos
+/admin/../admin/deleteUser?username=carlos
+```
 
 ---
 
@@ -98,18 +157,21 @@ Broken access control occurs when users can perform actions they shouldn't be al
 User accesses another user's data.
 
 ### IDOR (Insecure Direct Object Reference)
+
 - Access resource by changing `id` in URL:
   ```http
   https://insecure-website.com/myaccount?id=456
   ```
 
 ### GUIDs are not always safe
+
 - Even unpredictable IDs can be leaked in:
   - Messages
   - Reviews
   - Links
 
 ### Data leakage in redirects
+
 - Redirects might leak sensitive data even if access is denied.
 
 ---
@@ -138,9 +200,10 @@ User accesses another user's data.
 - If one step lacks access control, attacker can jump directly to it.
 
 ### Example:
+
 1. Load user edit form
 2. Submit changes
-3. Confirm changes 
+3. Confirm changes
 
 Attacker skips steps 1 and 2, jumps to 3.
 
@@ -172,17 +235,5 @@ Follow these best practices:
 - Use a centralized access control mechanism.
 - Enforce access policies at the code level.
 - Regularly test and audit access controls.
-
----
-
-## Practice Labs (Recommended)
-
-- Unprotected admin functionality
-- Parameter-based role control
-- URL/header-based access control bypass
-- IDOR vulnerabilities
-- Multi-step flow exploitation
-
-> Practice helps build real-world understanding of access control attacks.
 
 ---

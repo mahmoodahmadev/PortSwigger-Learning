@@ -234,3 +234,4 @@ Follow these best practices:
 - Except for publi resources, deny access by default unless explicitly allowed.
 - Use a centralized access control mechanism through which all API requests will have to go through to first authenticate.
 - Always give least priveleges not only at the code level but also configuration level as well so that every user has only the required resources.
+- Consider using feature-based/attributes access control checks instead of role-based access control.

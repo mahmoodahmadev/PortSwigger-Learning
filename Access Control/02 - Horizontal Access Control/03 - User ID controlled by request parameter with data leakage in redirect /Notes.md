@@ -2,9 +2,9 @@
 
 ## Given:
 
-- Vulnerability lies in an request response.
-- Provided credentials `wiener: peter`.
-
+- There is a vulnerability in a direct response from backend application.
+- The credentials are give `wiener:peter`.
+- 
 ## Objective:
 
 - Submit the API key for user `carlos`.

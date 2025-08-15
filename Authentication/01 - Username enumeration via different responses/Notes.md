@@ -1,23 +1,22 @@
-# LAB: Username enumeration via subtly different responses
+# LAB: Username enumeration via different responses
 
 ## Given:
 
-- The target website is subtly vulnerable to username enumeration.
+- The lab demonstrates vulnerabilities related to user enumeration by returning different response.
+- A wordlist is provided to facilitate brute-forcing of usernames and passwords.
 
 ## Objective:
 
-- Enumerate a valid username and brute-force through a list of password wordlists to login with the username.
+- Successfully brute-force the login by identifying a valid username and password using the provided wordlists.
 
 ## Key Concepts:
 
-- **Subtle Username Enumeration:** Identifying valid usernames by detecting minor differences in error messages or server responses.
+- **Username Enumeration:** Identifying valid usernames by analyzing differences in server responses, such as response length, error messages, or status codes.
 - **Password Brute-Forcing:** Systematically attempting passwords for a known username until the correct one is found.
 - **Response Analysis:** Using tools to compare server responses and identify anomalies that indicate valid credentials.
 - **Burp Suite Intruder:** Automating the process of sending multiple payloads and analyzing responses for successful brute-force attacks.
 
 ## Steps Taken:
-
-- **Load the target website.**
 
 1. **Proxy Setup:**  
    Proxy browser traffic through Burp Suite to intercept and analyze requests.
@@ -34,46 +33,35 @@
 5. **Load Username Wordlist:**  
    Insert the provided wordlist of usernames into Intruder.
 
-6. **Grep the General Error:**  
-   Set up grep for the general error message `Invalid username and password.`.
-
-![](./Images/general%20error%20message.png)
-
-7. **Execute Sniper Attack:**  
+6. **Execute Sniper Attack:**  
    Use the sniper attack type to brute-force usernames.
 
-8. **Analyze Responses:**  
-   Observe the grep results and identify the response where the mentioned error message is not found.
+7. **Analyze Responses:**  
+   Observe the length of all responses. Identify any response with a different length.
 
-![](./Images/Enumerated%20username%20results.png)
+8. **Identify Valid Username:**  
+   Render the anomalous response and note the error message `Incorrect Password`, indicating a valid username.
 
-9. **Identify Valid Username:**  
-   Render the anomalous response and note that there is no dot `.` at the end of the error message.
+   ![](./Images/brute%20force%20username%20result.png)
 
-![](./Images/slightly%20different%20error%20message.png)
+9. **Note Valid Username:**  
+   Record the valid username from the identified request.
 
-![](./Images/brute%20force%20username%20result.png)
-
-10. **Note Valid Username:**  
-    Record the valid username from the identified request.
-
-11. **Brute-Force Passwords:**  
+10. **Brute-Force Passwords:**  
     Repeat steps 4 to 7, this time marking the password field and using the valid username found earlier.
 
-12. **Analyze Password Responses:**  
+11. **Analyze Password Responses:**  
     Observe the status codes for each response. Identify the response with a `302` status code, indicating a successful login.
-
-![](./Images/Brute%20forced%20password%20results.png)
 
     ![](./Images/bruthe%20force%20pasword%20result.png)
 
-13. **Note Valid Password:**  
+12. **Note Valid Password:**  
     Record the password from the successful request.
 
-14. **Login to Application:**  
+13. **Login to Application:**  
     Use the valid username and password to log in via the browser.
 
-15. **Verify Success:**  
+14. **Verify Success:**  
     Confirm that the user is logged in and the lab is solved.
 
 ## Payloads Used:
@@ -84,7 +72,8 @@
 
 - No issues encountered during the exploitation process.
 
-## Takeaways:
+## Takeaways
 
-- Always check for exact error message content, as sometimes the error message for invalid login credentials can be slightly changed, revealing valid usernames.
-- Subtle differences in server responses can be leveraged for effective username enumeration and brute
+- Always attempt to brute-force usernames and passwords if the target website does not implement login rate limiting or account lockout mechanisms.
+- Pay close attention to differences in server responses, such as length, error messages, and status codes, as these can reveal valid credentials.
+- Automated tools like Burp Suite Intruder are invaluable for efficiently identifying authentication

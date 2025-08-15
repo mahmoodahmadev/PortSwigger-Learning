@@ -112,3 +112,17 @@ When testing for username enumeration, pay attention to:
   If most requests have similar response times, but some take longer, it may indicate that the website is performing additional checks (such as verifying the password only if the username is valid). Attackers can amplify this delay by entering an excessively long password, making the timing difference more noticeable.
 
 Identifying these subtle differences can help attackers enumerate valid usernames and significantly improve the efficiency of brute-force
+
+## Flawed Brute-force Protection
+
+Brute-force attacks typically involve many failed guesses before an account is compromised. Effective brute-force protection aims to make automation difficult and slow down the rate of login attempts. The two most common defenses are:
+
+- **Account Lockout:** Locking the targeted account after too many failed login attempts.
+- **IP Blocking:** Blocking the remote user's IP address if they make too many login attempts in quick succession.
+
+While these methods offer some protection, they are not foolproof, especially if implemented with flawed logic.
+
+**Example of flawed logic:**  
+Some systems reset the failed attempt counter if the IP owner logs in successfully. An attacker can exploit this by periodically logging in to their own account during an attack, preventing the limit from being reached.
+
+By including their own valid credentials at regular intervals in the wordlist, attackers can bypass these protections and continue brute-forcing without triggering account lockouts or IP blocks.

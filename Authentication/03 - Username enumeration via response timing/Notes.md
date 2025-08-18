@@ -1,4 +1,4 @@
-# LAB: Username enumeration via different responses
+# LAB: Username enumeration via response timing
 
 ## Given:
 
@@ -18,57 +18,68 @@
 
 ## Steps Taken:
 
-1. **Proxy Setup:**  
-   Proxy browser traffic through Burp Suite to intercept and analyze requests.
+1. **Setup burp proxy**
+   To intercept all the requests.
 
-2. **Access Target:**  
-   Load the target website and navigate to the login page.
+2. **Load the target website**
+   in burp proxy configured browser.
 
-3. Login with the provided user `wiener; peter` and check the response time in browser to get a general idea of how much time the login can take for valid credentials.
+3. **Initial Testing:**  
+   With Burp running, submit an invalid username and password, then send the POST `/login` request to Burp Repeater. Experiment with different usernames and passwords.
 
-![](./Images/successful%20login%20response%20time.png)
+![](./Images/intercept%20the%20login%20request%20with%20found%20credentials.png)
 
-4. **Send Request to Intruder:**  
-   Capture the `/login` POST request and send it to Burp Suite Intruder.
+4. **IP Blocking Detection:**  
+   Notice that your IP will be blocked if you make too many invalid login attempts.
 
-5. **Configure Intruder Positions:**  
-   Mark the username field as the payload position.
+![](./Images/too%20many%20invalid%20login%20requests.png)
 
-6. **Load Username Wordlist:**  
-   Insert the provided wordlist of usernames into Intruder.
+5. **IP Spoofing:**  
+   Identify that the `X-Forwarded-For` header is supported, which allows you to spoof your IP address and bypass the IP-based brute-force protection.
 
-7. **Execute Sniper Attack:**  
-   Use the sniper attack type to brute-force usernames.
+![](./Images/request%20intercpeted%20through%20repeater%20with%20long%20invalid%20password.png)
 
-8. **Analyze Responses:**  
-   Observe the response time and see which response is taking more time than required for a failed attempt.
+6. **Response Time Analysis:**  
+   Continue experimenting with usernames and passwords. Pay particular attention to the response times. When the username is invalid, the response time is roughly the same. When you enter a valid username (your own), the response time increases depending on the length of the password entered.
 
-9. **Identify Valid Username:**  
-   Render the anomalous response and note the error message `Incorrect Password`, indicating a valid username.
+7. **Intruder Setup:**  
+   Send this request to Burp Intruder and select Pitchfork attack from the attack type drop-down menu. Add the `X-Forwarded-For` header.
 
-   ![]()
+8. **Payload Positioning:**  
+   Add payload positions for the `X-Forwarded-For` header and the username parameter. Set the password to a very long string of characters (about 100 characters).
 
-10. **Note Valid Username:**  
-    Record the valid username from the identified request.
+9. **Payload Configuration:**  
+   In the Payloads side panel, select position 1 from the Payload position drop-down list. Select the Numbers payload type. Enter the range 1 - 100 and set the step to 1. Set the max fraction digits to 0 (for IP spoofing).
 
-11. **Brute-Force Passwords:**  
-    Repeat steps 4 to 7, this time marking the password field and using the valid username found earlier.
+10. **Username Enumeration Attack:**  
+    Select position 2 from the Payload position drop-down list, then add the list of usernames. Start the attack.
 
-12. **Analyze Password Responses:**  
-    Observe the status codes for each response. Identify the response with a `302` status code, indicating a successful login.
+11. **Response Time Analysis:**  
+    When the attack finishes, at the top of the dialog, click Columns and select the Response received and Response completed options. These two columns are now displayed in the results table.
 
-![]() 12. **Note Valid Password:**  
- Record the password from the successful request.
+12. **Identify Valid Username:**  
+    Notice that one of the response times was significantly longer than the others. Repeat this request a few times to make sure it consistently takes longer, then make a note of this username.
 
-13. **Login to Application:**  
-    Use the valid username and password to log in via the browser.
+![](./Images/username%20enumeration%20results.png)
 
-14. **Verify Success:**  
-    Confirm that the user is logged in and the lab is solved.
+13. **Password Brute-Force Setup:**  
+    Create a new Burp Intruder attack for the same request. Add the `X-Forwarded-For` header again and add a payload position to it. Insert the username that you just identified and add a payload position to the password parameter.
+
+14. **Password Attack Configuration:**  
+    In the Payloads side panel, add the list of numbers to payload position 1 and add the list of passwords to payload position 2. Start the attack.
+
+15. **Identify Valid Password:**  
+    When the attack is finished, find the response with a `302` status. Make a note of this password.
+
+![](./Images/password%20brute%20force%20results.png)
+
+16. **Login and Verification:**  
+    Log in using the username and password that you identified and access the user account page to solve the lab.
 
 ## Payloads Used:
 
 - Provided wordlists for usernames and passwords.
+- Numbers payload for IP spoofing via `X-Forwarded-For`.
 
 ## Issues Encountered:
 
@@ -77,3 +88,5 @@
 ## Takeaways
 
 - Delays in response more than usual can mean the enumerated credentials might be the right ones.
+- The `X-Forwarded-For`, `X-Real-IP` headers can be used to bypass IP-based brute-force protection.
+- Response timing analysis is a powerful technique for identifying valid usernames and

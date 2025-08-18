@@ -1,0 +1,10 @@
+AUTHENTICATION MINDMAP
+======================
+
+- Brute Force
+- Enumeration
+    - Via different response.
+    - Via subtly different response.
+    - Via response timing
+
+

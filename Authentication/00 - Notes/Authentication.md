@@ -126,3 +126,17 @@ While these methods offer some protection, they are not foolproof, especially if
 Some systems reset the failed attempt counter if the IP owner logs in successfully. An attacker can exploit this by periodically logging in to their own account during an attack, preventing the limit from being reached.
 
 By including their own valid credentials at regular intervals in the wordlist, attackers can bypass these protections and continue brute-forcing without triggering account lockouts or IP blocks.
+
+## Account Locking
+
+One way in which websites try to prevent brute-forcing is to lock the account if certain suspicious criteria are met, usually a set number of failed login attempts. Just as with normal login errors, responses from the server indicating that an account is locked can also help an attacker to enumerate usernames.
+
+Locking an account offers a certain amount of protection against targeted brute-forcing of a specific account. However, this approach fails to adequately prevent brute-force attacks in which the attacker is just trying to gain access to any random account they can.
+
+**Attackers can work around account locking by:**
+
+1. Establishing a list of candidate usernames that are likely to be valid. This could be through username enumeration or simply based on a list of common usernames.
+2. Deciding on a very small shortlist of passwords that are likely to be used by at least one user. The number of passwords selected must not exceed the number of login attempts allowed before lockout (e.g., if the limit is 3 attempts, pick 3 passwords).
+3. Using a tool such as Burp Intruder to try each selected password with each candidate username. This approach allows brute-forcing across all accounts without triggering account lockouts. If just one user uses one of the selected passwords, the attacker can successfully compromise an account without being blocked by account locking.
+
+Account locking also fails to protect against credential stuffing attacks. This involves using a massive dictionary of username:password pairs, composed of genuine login credentials stolen in data breaches. Credential stuffing relies on the fact that many people reuse the same username and password on multiple websites and, therefore, there is a chance that some of the compromised credentials in the dictionary are also valid on the target website. Account locking does not protect against credential stuffing because each username is only being attempted once. Credential stuffing is particularly dangerous because it can sometimes result in the attacker compromising many different accounts with just a single automated

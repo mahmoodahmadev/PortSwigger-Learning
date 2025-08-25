@@ -140,3 +140,95 @@ Locking an account offers a certain amount of protection against targeted brute-
 3. Using a tool such as Burp Intruder to try each selected password with each candidate username. This approach allows brute-forcing across all accounts without triggering account lockouts. If just one user uses one of the selected passwords, the attacker can successfully compromise an account without being blocked by account locking.
 
 Account locking also fails to protect against credential stuffing attacks. This involves using a massive dictionary of username:password pairs, composed of genuine login credentials stolen in data breaches. Credential stuffing relies on the fact that many people reuse the same username and password on multiple websites and, therefore, there is a chance that some of the compromised credentials in the dictionary are also valid on the target website. Account locking does not protect against credential stuffing because each username is only being attempted once. Credential stuffing is particularly dangerous because it can sometimes result in the attacker compromising many different accounts with just a single automated
+
+## User Rate Limiting
+
+Another way websites try to prevent brute-force attacks is through user rate limiting. In this approach, making too many login requests within a short period causes your IP address to be blocked. Typically, the IP can only be unblocked in one of the following ways:
+
+- Automatically after a certain period of time has elapsed
+- Manually by an administrator
+- Manually by the user after successfully completing a CAPTCHA
+
+User rate limiting is sometimes preferred to account locking because it is less prone to username enumeration and denial of service attacks. However, it is still not completely secure. Attackers can manipulate their apparent IP address (for example, by using the `X-Forwarded-For` header or rotating proxies) to bypass the block.
+
+Since the limit is based on the rate of HTTP requests sent from the user's IP address, it may also be possible to bypass this defense by guessing multiple passwords with a single request, depending on how the application processes login
+
+## HTTP Basic Authentication
+
+Although fairly old, HTTP basic authentication is still sometimes used due to its simplicity and ease of implementation. In HTTP basic authentication, the client receives an authentication token from the server, which is constructed by concatenating the username and password, and encoding it in Base64. This token is stored and managed by the browser, which automatically adds it to the Authorization header of every subsequent request as follows:
+
+```
+Authorization: Basic base64(username:password)
+```
+
+### Security Issues
+
+- **Credential Exposure:**  
+  The user's login credentials are sent with every request. Unless the website enforces HTTPS (preferably with HSTS), credentials can be intercepted in a man-in-the-middle attack.
+
+- **Lack of Brute-force Protection:**  
+  Implementations often do not support brute-force protection. Since the token is static, attackers can easily automate brute-force attacks.
+
+- **Session-related Vulnerabilities:**  
+  HTTP basic authentication is particularly vulnerable to session-related exploits, such as CSRF, because it does not provide any built-in protection.
+
+- **Credential Reuse Risk:**  
+  Even if access is gained to a seemingly unimportant page, exposed credentials may be reused in other, more sensitive contexts, increasing the risk of further compromise.
+
+### Key Takeaways
+
+- Avoid using HTTP basic authentication for sensitive applications.
+- Always enforce HTTPS and consider HSTS to protect credentials in transit.
+- Implement additional protections against brute-force and CSRF attacks if basic authentication
+
+## Brute-Forcing 2FA Verification Codes
+
+- Like passwords, 2FA verification codes must be protected against brute-force attacks.
+- 2FA codes are often simple 4 or 6-digit numbers, making them easy to crack without proper protections.
+- Without brute-force protection, attackers can quickly guess the code and bypass 2FA.
+
+### Common (Ineffective) Protections
+
+- Some websites log out users after a certain number of incorrect code attempts.
+- This is not effective against advanced attackers who can automate the login and code entry process.
+- Tools like Burp Suite Intruder (with macros) and Turbo Intruder can automate multi-step brute-forcing.
+
+### Key Takeaway
+
+- Robust brute-force protection is essential for 2FA codes, such as rate limiting, account lockout, or CAPTCHA.
+
+## Vulnerabilities in Other Authentication Mechanisms
+
+- Beyond basic login, websites often provide features like password change and password reset.
+- These supplementary mechanisms can introduce new vulnerabilities if not properly secured.
+- Attackers may exploit weaknesses in these features to gain unauthorized access or escalate privileges.
+
+### Common Issues
+
+- Developers may focus on securing the main login page but overlook related account management pages.
+- Attackers can create their own accounts to study and exploit flaws in password reset or change functionality.
+- Inadequate validation, weak authentication, or poor session management in these features can be exploited.
+
+### Key Takeaway
+
+- All authentication-related functionality must be robustly secured, not just the login page.
+- Regularly review and test supplementary authentication mechanisms for vulnerabilities.
+
+## Keeping Users Logged In
+
+- Many websites offer a "Remember me" or "Keep me logged in" feature to maintain user sessions across browser restarts.
+- This is typically implemented using a persistent "remember me" token stored in a cookie.
+
+### Security Concerns
+
+- The "remember me" cookie allows users to bypass the login process if possessed.
+- Best practice: The token should be random and impractical to guess.
+- Vulnerable implementations may generate the cookie using predictable values (e.g., username, timestamp, or even password).
+- Attackers can create their own accounts, analyze their cookies, and deduce the generation formula.
+- Once the formula is known, attackers can brute-force cookies for other users and gain unauthorized access.
+
+### Key Takeaway
+
+- Always use secure, random tokens for persistent login cookies.
+- Avoid using static or easily guessable values in cookie generation.
+- Regularly review and test the security of session management features.

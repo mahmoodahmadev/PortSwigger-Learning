@@ -12,7 +12,7 @@
 
 ## Key Concepts:
 
-- 'X-Original-URL' & `X-Rewrite-URL` headers are used by some backend frameworks to override the main URL.
+- `X-Original-URL` & `X-Rewrite-URL` headers are used by some backend frameworks to override the main URL.
 
 ## Steps Taken:
 
@@ -39,7 +39,7 @@
 
 7. Send the request.
 8. The user `carlos` is deleted.
-9.  Lab is solved.
+9. Lab is solved.
 
 ## Payloads Used:
 
@@ -48,6 +48,7 @@
 POST /?username=carlos HTTP/1.1
 X-Original-URL: /admin/deleteUser
 ```
+
 ## Payload explanation:
 
 - Some backend frameworks accept `X-Original-URL` or `X-Rewrite-URL` headers.

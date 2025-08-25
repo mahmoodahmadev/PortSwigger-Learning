@@ -180,3 +180,55 @@ Authorization: Basic base64(username:password)
 - Avoid using HTTP basic authentication for sensitive applications.
 - Always enforce HTTPS and consider HSTS to protect credentials in transit.
 - Implement additional protections against brute-force and CSRF attacks if basic authentication
+
+## Brute-Forcing 2FA Verification Codes
+
+- Like passwords, 2FA verification codes must be protected against brute-force attacks.
+- 2FA codes are often simple 4 or 6-digit numbers, making them easy to crack without proper protections.
+- Without brute-force protection, attackers can quickly guess the code and bypass 2FA.
+
+### Common (Ineffective) Protections
+
+- Some websites log out users after a certain number of incorrect code attempts.
+- This is not effective against advanced attackers who can automate the login and code entry process.
+- Tools like Burp Suite Intruder (with macros) and Turbo Intruder can automate multi-step brute-forcing.
+
+### Key Takeaway
+
+- Robust brute-force protection is essential for 2FA codes, such as rate limiting, account lockout, or CAPTCHA.
+
+## Vulnerabilities in Other Authentication Mechanisms
+
+- Beyond basic login, websites often provide features like password change and password reset.
+- These supplementary mechanisms can introduce new vulnerabilities if not properly secured.
+- Attackers may exploit weaknesses in these features to gain unauthorized access or escalate privileges.
+
+### Common Issues
+
+- Developers may focus on securing the main login page but overlook related account management pages.
+- Attackers can create their own accounts to study and exploit flaws in password reset or change functionality.
+- Inadequate validation, weak authentication, or poor session management in these features can be exploited.
+
+### Key Takeaway
+
+- All authentication-related functionality must be robustly secured, not just the login page.
+- Regularly review and test supplementary authentication mechanisms for vulnerabilities.
+
+## Keeping Users Logged In
+
+- Many websites offer a "Remember me" or "Keep me logged in" feature to maintain user sessions across browser restarts.
+- This is typically implemented using a persistent "remember me" token stored in a cookie.
+
+### Security Concerns
+
+- The "remember me" cookie allows users to bypass the login process if possessed.
+- Best practice: The token should be random and impractical to guess.
+- Vulnerable implementations may generate the cookie using predictable values (e.g., username, timestamp, or even password).
+- Attackers can create their own accounts, analyze their cookies, and deduce the generation formula.
+- Once the formula is known, attackers can brute-force cookies for other users and gain unauthorized access.
+
+### Key Takeaway
+
+- Always use secure, random tokens for persistent login cookies.
+- Avoid using static or easily guessable values in cookie generation.
+- Regularly review and test the security of session management features.

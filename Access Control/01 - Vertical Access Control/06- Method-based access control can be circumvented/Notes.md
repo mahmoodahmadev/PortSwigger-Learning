@@ -45,7 +45,7 @@
 ![](./Images/admin-roles%20with%20PUT%20request.png).
 
 15. `302` response code is returned means the request was complete.
-16. The `weiner` user is not upgraded to admin priveleges just because the appication had broken HTTP method access control vulnerability.
+16. The `weiner` user is now upgraded to admin priveleges just because the appication had broken HTTP method access control vulnerability.
 17. The lab is solved.
 
 ## Payloads Used:

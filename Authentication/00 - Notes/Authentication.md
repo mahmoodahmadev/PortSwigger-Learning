@@ -216,19 +216,35 @@ Authorization: Basic base64(username:password)
 
 ## Keeping Users Logged In
 
-- Many websites offer a "Remember me" or "Keep me logged in" feature to maintain user sessions across browser restarts.
-- This is typically implemented using a persistent "remember me" token stored in a cookie.
+- Many websites offer a "Remember me" or "Keep me logged in" feature, allowing users to stay authenticated across browser sessions.
+- This is typically implemented by generating a "remember me" token and storing it in a persistent cookie.
 
-### Security Concerns
+### Security Risks
 
-- The "remember me" cookie allows users to bypass the login process if possessed.
-- Best practice: The token should be random and impractical to guess.
-- Vulnerable implementations may generate the cookie using predictable values (e.g., username, timestamp, or even password).
-- Attackers can create their own accounts, analyze their cookies, and deduce the generation formula.
-- Once the formula is known, attackers can brute-force cookies for other users and gain unauthorized access.
+- If the cookie is generated using predictable static values (e.g., username, timestamp, or password), it can be easily guessed or brute-forced.
+- Attackers who can create their own account may analyze their own cookie to deduce the generation formula, then brute-force cookies for other users.
+- Using the password as part of the cookie is especially dangerous, as it may expose sensitive information.
 
-### Key Takeaway
+### Encryption and Hashing Pitfalls
 
-- Always use secure, random tokens for persistent login cookies.
-- Avoid using static or easily guessable values in cookie generation.
-- Regularly review and test the security of session management features.
+- Simply encoding the cookie (e.g., Base64) does not provide security.
+- Even proper encryption or hashing is not foolproof if the algorithm is easily identified and no salt is used.
+- Attackers can hash wordlists to brute-force cookies if no rate limiting is applied to cookie guesses.
+
+### Other Attack Vectors
+
+- Attackers may steal "remember me" cookies via XSS or other techniques, then analyze their structure.
+- If the website uses an open-source framework, cookie construction details may be publicly documented, aiding attackers.
+
+### Password Exposure
+
+- In rare cases, cookies may contain the user's password in cleartext or as a hash.
+- Hashed passwords can sometimes be reversed using online hash databases, especially if common passwords are used and no salt is present.
+
+### Key Takeaways
+
+- "Remember me" cookies should be generated using secure, unpredictable values.
+- Always use proper encryption with a unique salt for each user.
+- Apply rate limiting to cookie-based authentication attempts.
+- Never store sensitive information, such as passwords, in cookies.
+- Regularly review and test persistent login mechanisms for vulnerabilities.

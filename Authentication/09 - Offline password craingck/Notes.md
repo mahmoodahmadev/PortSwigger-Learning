@@ -1,4 +1,4 @@
-# LAB: Offline password cracking
+# LAB: Offline password craingck
 
 ## Given:
 

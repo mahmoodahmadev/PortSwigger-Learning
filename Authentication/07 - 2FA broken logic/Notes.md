@@ -1,106 +1,77 @@
-# LAB: 2FA Broken Logic
+# LAB: 2FA broken logic
 
 ## Given:
 
-- The lab is vulnerable to flawed 2FA authentication logic.
-- Credentials provided: `wiener: peter`.
-- Target username: `carlos`.
-- Access to Email server for receiving security codes.
+- The lab is vulnerable to 2FA authentication flawed logic.
+- Provided credentials `wiener: peter`.
+- Provided target user's username `carlos`.
+- Access to Email server to receive security code.
 
----
+## Objective:
 
-## Objective
+## Key Concepts:
 
-- Exploit broken logic in the 2FA implementation to log in as the target user `carlos` without knowing their password.
+## Steps Taken:
 
----
+1. Proxy the target website traffic through Burp suite to log and intercept the requests.
+2. Load the target website
+3. Login with `wiener: peter`.
+4. The system will ask for a security code after logging in with credentials.
 
-## Key Concepts
+![](./Images/Security%20code%20verification%20page.png)
 
-- 2FA should tightly bind both authentication steps to the same user session.
-- Flawed logic can allow attackers to bypass password requirements and brute-force verification codes.
-- Session management and request validation are critical for secure authentication.
+5. Use the provided Email server to get the security code for `wiener`.
 
----
+![](./Images/Email%20Client%20.png)
 
-## Steps Taken
+6. Now as the log in is completed, go to site map in burp suite for the target website.
+7. Send all the login related requested to repeater. These requests will be
+   1. POST /login
+   2. GET /login2
+   3. POST login2
 
-1. Proxy traffic through Burp Suite to intercept and analyze requests.
-2. Load the target website and log in as `wiener: peter`.
-3. After entering credentials, the system prompts for a security code.
+![](./Images/Site%20map.png)
 
-   ![](./Images/Security%20code%20verification%20page.png)
+8. The 1st request seems normal, requiring credentials, as we dont have password for `carlos` so move forward to next requests.
+9. 2nd request is used to generate the security code for the user specified in `verify` cookie.
+10. Try to remove the session cookie and see if its required or not as we dont have session cookie for `carlos`.
+11. Sending the 2nd request without session gives us 302 indicating another vulnerability.
+12. We can generate the security code for `carlos` through 2nd request as it does not required session.
+13. Send the 2nd request with `verify=carlos` to generate a security code for `carlos`.
 
-   - Use the Email server to retrieve the code for `wiener`.
+![](./Images/get%20security%20code%20page%20for%20carlos%20user.png)
 
-   ![](./Images/Email%20Client%20.png)
+14. Moving to 3rd request, which sends the security code value along with 2 cookies
+    1. verify=username
+    2. session=value
+15. We can again try to see if this one also requires user session cookie or not, and indeed it doesnt. Which is another vulnerability in itself.
+16. Change the `verify` cookie value to `carlos` and send mulitple requests to see if there is any request limits implemented.
+17. There seems to be no limit to invalid security code submisson attempts which is also a vulnerability and means we can brute force this security code.
 
-4. After successful login, use Burp Suite's site map to identify all login-related requests:
+![](./Images/get%20security%20code%20page%20for%20carlos%20user.png)
 
-   - `POST /login` (credentials)
-   - `GET /login2` (security code generation)
-   - `POST /login2` (security code submission)
+18. Send the request to intruder and setup the brute force for 4 digit security code as we saw while loggin in with `wiener` that the security code is of length 4 and only include digits.
 
-   ![](./Images/Site%20map.png)
+![](./Images/configuring%20brute%20force%20attack%20to%20find%20mfa%20code.png)
 
-5. Attempt to generate a security code for `carlos` by manipulating the `verify` cookie in the `GET /login2` request.
-   - No session cookie required; a 302 response confirms the vulnerability.
-6. Send the request with `verify=carlos` to generate a security code for `carlos`.
+19. This will be a 10000 request combinations, as we start the sniper attack on it.
+20. Analyzing the results, we get a response with 302 response.
+21. check the response of that request and boom! we got session cookie for user `carlos`.
 
-   ![](./Images/get%20security%20code%20page%20for%20carlos%20user.png)
+![](./Images/got%20session%20for%20user%20carlos%20.png)
 
-7. In the `POST /login2` request, submit the security code for `carlos` without a valid session cookie.
-   - Again, no session required, confirming another logic flaw.
-8. Test for brute-force protection by submitting multiple invalid codes for `carlos`.
+22. Change the browser's URL to endpoint `/my-account` while intercpeter is on.
 
-   - No rate limiting or lockout is present; brute-forcing is possible.
+![](./Images/Change%20id%20to%20carlos.png)
 
-   ![](./Images/get%20security%20code%20page%20for%20carlos%20user.png)
+23. replace the session value with the one we got.
+24. The `carlos` user is logged in and is able to access the `/my-account` page.
+25. The lab is solved.
 
-9. Use Burp Intruder to brute-force the 4-digit security code for `carlos` (10,000 combinations).
+## Payloads Used:
 
-   ![](./Images/configuring%20brute%20force%20attack%20to%20find%20mfa%20code.png)
+## Issues Encountered:
 
-10. Upon success, receive a session cookie for `carlos`.
+## Solutions/Workarounds:
 
-    ![](./Images/got%20session%20for%20user%20carlos%20.png)
-
-11. Change the browser's URL to `/my-account` and use the new session cookie to access the account as `carlos`.
-
-    ![](./Images/Change%20id%20to%20carlos.png)
-
-12. Lab solved: full access to the target user's account.
-
----
-
-## Payloads Used
-
-- Manipulated `verify` cookie to target `carlos`.
-- Brute-forced 4-digit security code using Burp Intruder.
-
----
-
-## Issues Encountered
-
-- No session validation for security code generation and submission.
-- No brute-force protection on the 2FA code entry.
-
----
-
-## Solutions/Workarounds
-
-- Use Burp Suite to intercept and replay requests.
-- Automate brute-forcing with Burp Intruder for rapid code guessing.
-
----
-
-## Takeaways
-
-- Always validate user sessions for every step of authentication, especially 2FA.
-- Ensure security code generation and submission are tightly bound to authenticated sessions.
-- Implement rate limiting and account lockout for repeated invalid 2FA code attempts.
-- Test for logic flaws by manipulating cookies and replaying requests with different user values.
-- Use interception tools like Burp Suite to analyze and exploit authentication flows.
-- Brute-force protection is essential for short verification codes.
-
----
+## Takeaways:

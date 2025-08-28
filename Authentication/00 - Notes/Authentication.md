@@ -248,3 +248,40 @@ Authorization: Basic base64(username:password)
 - Apply rate limiting to cookie-based authentication attempts.
 - Never store sensitive information, such as passwords, in cookies.
 - Regularly review and test persistent login mechanisms for vulnerabilities.
+
+## Resetting User Passwords
+
+- Password reset functionality is essential but inherently risky, as it bypasses normal authentication.
+- Secure implementation is critical to prevent unauthorized password changes.
+
+### Common Password Reset Methods
+
+#### Sending Passwords by Email
+
+- Secure websites should never send users their current password.
+- Some sites generate a new password and email it to the user.
+- Sending persistent passwords over email is insecure and vulnerable to man-in-the-middle attacks.
+- Email inboxes are not designed for secure storage and may sync across insecure channels.
+- If used, generated passwords should expire quickly or be changed immediately.
+
+#### Resetting Passwords Using a URL
+
+- A more robust method is sending a unique URL for password reset.
+- **Insecure implementation:** Uses a guessable parameter (e.g., `?user=username`), allowing attackers to reset any account by changing the parameter.
+- **Secure implementation:** Uses a high-entropy, hard-to-guess token (e.g., `?token=<random_token>`).
+  - The token should not reveal the username.
+  - The system should validate the token and associate it with the correct user.
+  - Tokens must expire quickly and be destroyed after use.
+
+### Common Vulnerabilities
+
+- Failing to validate the token when the reset form is submitted can allow attackers to reset arbitrary accounts.
+- Password reset poisoning: If the reset URL is generated dynamically and not properly validated, attackers may steal tokens and reset other users' passwords.
+
+### Key Takeaways
+
+- Never send passwords over insecure channels like email.
+- Always use high-entropy, single-use tokens for password resets.
+- Validate tokens both when the reset page is loaded and when the new password is submitted.
+- Ensure tokens expire quickly and are destroyed after use.
+- Regularly review and test password reset functionality for security flaws.

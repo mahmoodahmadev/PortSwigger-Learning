@@ -36,11 +36,25 @@
    </script>
    ```
 7. Submit the comment and monitor Burp Collaborator for incoming requests from other users.
+
+   ![](./Images/collaborator%20got%20the%20fetch%20request%20from%20target%20user%20session.png)
+
 8. When a request arrives, extract the session and `stay-logged-in` cookie values for the target user (`carlos`).
 9. Decode the `stay-logged-in` cookie (often Base64 encoded). Format is typically `carlos:<hashed_value>`.
+
+   ![](./Images/decoded%20the%20base64%20stay-logged-in%20cookie.png)
+
 10. Attempt to crack the hash using online databases or hash-cracking tools (MD5 in this case).
+
+    ![](./Images/decrypted%20the%20password%20.png)
+
 11. Use the cracked password to log in as `carlos`.
+
+    ![](./Images/access%20carlos%20my-account%20page%20using%20his%20stay-logged-in%20cookie.png)
+
 12. Navigate to the account deletion page and enter the cracked password to delete the account.
+
+    ![](./Images/Delete%20the%20account.png)
 
 ## Payloads Used:
 

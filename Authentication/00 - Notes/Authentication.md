@@ -285,3 +285,53 @@ Authorization: Basic base64(username:password)
 - Validate tokens both when the reset page is loaded and when the new password is submitted.
 - Ensure tokens expire quickly and are destroyed after use.
 - Regularly review and test password reset functionality for security flaws.
+
+## Preventing Attacks on Your Own Authentication Mechanisms
+
+### Take Care with User Credentials
+
+- Never send login data over unencrypted connections.
+- Enforce HTTPS for all authentication requests and redirect HTTP to HTTPS.
+- Audit your website to ensure usernames and email addresses are not disclosed in profiles or HTTP responses.
+
+### Don't Count on Users for Security
+
+- Enforce secure behavior through technical controls, not user diligence.
+- Implement effective password policies using real-time password strength checkers (e.g., zxcvbn).
+- Only allow passwords rated highly by the checker to ensure strong credentials.
+
+### Prevent Username Enumeration
+
+- Use identical, generic error messages for all login attempts.
+- Return the same HTTP status code for every login response.
+- Make response times indistinguishable to prevent timing attacks.
+
+### Implement Robust Brute-Force Protection
+
+- Use strict, IP-based rate limiting to disrupt brute-force attempts.
+- Prevent attackers from manipulating their IP address (e.g., via headers).
+- Require CAPTCHA after a certain number of failed login attempts.
+- Make brute-forcing tedious to discourage attackers.
+
+### Triple-Check Your Verification Logic
+
+- Audit all authentication and verification logic for flaws.
+- Ensure checks cannot be bypassed; a weak check is as bad as no check.
+
+### Don't Forget Supplementary Functionality
+
+- Secure all authentication-related features, not just the login page.
+- Password reset and change mechanisms are valid attack surfaces and must be robust.
+- Consider the risk if attackers can register and explore these features.
+
+### Implement Proper Multi-Factor Authentication
+
+- True multi-factor authentication requires verifying different factors.
+- Avoid using multiple instances of the same factor (e.g., password + email code).
+- SMS-based 2FA is vulnerable to SIM swapping; prefer dedicated devices or apps.
+- Ensure 2FA logic is sound and cannot be bypassed.
+
+---
+
+**Key Takeaway:**  
+Robust authentication requires secure implementation, thorough auditing, and attention to all related features—not just the login page.

@@ -98,3 +98,29 @@ X-Original-URL: /admin/deleteUser
 - Add `X-Original-URL` to access admin-only endpoints without proper authorization.
 
 ---
+
+# 🛡️ HTTP Header Manipulation – Full Guide
+
+---
+
+## 1. X-Forwarded-For (XFF) – IP Spoofing
+
+### 📝 Legitimate Use
+
+- Used to show the original client IP address when requests pass through a proxy or load balancer.
+- Helps servers log the true source IP for auditing and analytics.
+
+### ⚔️ Attack Example
+
+- Scenario: Site restricts `/admin` to internal IPs only.
+- Attacker sends:
+
+```http
+GET /admin HTTP/1.1
+Host: vulnerable-website.com
+X-Forwarded-For: 10.0.0.1
+```
+
+- The server trusts the header and grants access, allowing the attacker to bypass IP restrictions.
+
+---

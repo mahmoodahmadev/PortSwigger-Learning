@@ -1,6 +1,6 @@
 # File paths
-password_file = 'Authentication/04 -/Scripts/passwords.txt'
-username_file = 'Authentication/04 -/Scripts/usernames.txt'
+password_file = 'PortswiggerLearning/PortSwigger-Learning/Authentication/04 - Broken brute-force protection, IP block/Scripts/passwords.txt'
+username_file = 'PortswiggerLearning/PortSwigger-Learning/Authentication/04 - Broken brute-force protection, IP block/Scripts/usernames.txt'
 
 # Open the password file and read all passwords
 with open(password_file, 'r') as pf:

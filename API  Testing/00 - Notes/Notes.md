@@ -1,177 +1,264 @@
-API testing
-APIs (Application Programming Interfaces) enable software systems and applications to communicate and share data. API testing is important as vulnerabilities in APIs may undermine core aspects of a website's confidentiality, integrity, and availability.
+# API Security Testing Notes
 
-All dynamic websites are composed of APIs, so classic web vulnerabilities like SQL injection could be classed as API testing. In this topic, we'll teach you how to test APIs that aren't fully used by the website front-end, with a focus on RESTful and JSON APIs. We'll also teach you how to test for server-side parameter pollution vulnerabilities that may impact internal APIs.
+APIs (Application Programming Interfaces) enable software systems and applications to communicate and share data. Testing APIs is crucial because vulnerabilities can undermine a website’s confidentiality, integrity, and availability.
 
-To illustrate the overlap between API testing and general web testing, we've created a mapping between our existing topics and the OWASP API Security Top 10 2023.
+---
 
-API testing example
-Related pages
-To learn more GraphQL APIs, see our GraphQL API vulnerabilities Academy topic.
+## Mindmap: API Security Testing
 
-API recon
-To start API testing, you first need to find out as much information about the API as possible, to discover its attack surface.
+```plaintext
+API Security Testing
+├── Reconnaissance
+│   ├── Identify Endpoints
+│   ├── Review Documentation
+│   ├── Analyze JavaScript & Traffic
+│   └── Discover Hidden/Unused Endpoints
+├── Authentication & Authorization
+│   ├── Test Auth Mechanisms
+│   ├── Bypass/Privilege Escalation
+│   └── Rate Limiting
+├── Input Handling
+│   ├── Parameter Tampering
+│   ├── Mass Assignment
+│   ├── Server-side Parameter Pollution
+│   └── Content-Type & Data Format
+├── Business Logic
+│   ├── Workflow Manipulation
+│   └── Insecure Direct Object Reference (IDOR)
+├── Automated & Manual Tools
+│   ├── Burp Suite (Scanner, Intruder, Repeater)
+│   ├── Postman, SoapUI
+│   └── Specialized BApps (Param Miner, JS Link Finder)
+└── Prevention & Best Practices
+    ├── Allowlist Methods/Params
+    ├── Validate Input & Output
+    ├── Secure Documentation
+    └── Use Generic Error Messages
+```
 
-To begin, you should identify API endpoints. These are locations where an API receives requests about a specific resource on its server. For example, consider the following GET request:
+---
 
-GET /api/books HTTP/1.1
-Host: example.com
-The API endpoint for this request is /api/books. This results in an interaction with the API to retrieve a list of books from a library. Another API endpoint might be, for example, /api/books/mystery, which would retrieve a list of mystery books.
+## API Security Testing Checklist
 
-Once you have identified the endpoints, you need to determine how to interact with them. This enables you to construct valid HTTP requests to test the API. For example, you should find out information about the following:
+### Reconnaissance
 
-The input data the API processes, including both compulsory and optional parameters.
-The types of requests the API accepts, including supported HTTP methods and media formats.
-Rate limits and authentication mechanisms.
-API documentation
-APIs are usually documented so that developers know how to use and integrate with them.
+- [ ] Identify all API endpoints (URLs, methods, parameters)
+- [ ] Review available documentation (OpenAPI, Swagger, etc.)
+- [ ] Analyze JavaScript files for hidden endpoints
+- [ ] Use tools (Burp Scanner, JS Link Finder) to discover endpoints
+- [ ] Check for machine-readable docs (`/swagger`, `/openapi.json`)
 
-Documentation can be in both human-readable and machine-readable forms. Human-readable documentation is designed for developers to understand how to use the API. It may include detailed explanations, examples, and usage scenarios. Machine-readable documentation is designed to be processed by software for automating tasks like API integration and validation. It's written in structured formats like JSON or XML.
+### Authentication & Authorization
 
-API documentation is often publicly available, particularly if the API is intended for use by external developers. If this is the case, always start your recon by reviewing the documentation.
+- [ ] Test login, token, and session mechanisms
+- [ ] Attempt to bypass authentication
+- [ ] Test for privilege escalation (IDOR, role changes)
+- [ ] Check for rate limiting and brute-force protection
 
-Discovering API documentation
-Even if API documentation isn't openly available, you may still be able to access it by browsing applications that use the API.
+### Input Handling & Parameter Testing
 
-To do this, you can use Burp Scanner to crawl the API. You can also browse applications manually using Burp's browser. Look for endpoints that may refer to API documentation, for example:
+- [ ] Enumerate all parameters (documented and hidden)
+- [ ] Test for mass assignment (add extra fields in requests)
+- [ ] Try server-side parameter pollution (inject `&`, `#`, `=`, path traversal)
+- [ ] Change content types (JSON, XML, form-data) and observe behavior
+- [ ] Test for parameter overrides and duplicates
 
-/api
-/swagger/index.html
-/openapi.json
-If you identify an endpoint for a resource, make sure to investigate the base path. For example, if you identify the resource endpoint /api/swagger/v1/users/123, then you should investigate the following paths:
+### Business Logic & Workflow
 
-/api/swagger/v1
-/api/swagger
-/api
-You can also use a list of common paths to find documentation using Intruder.
+- [ ] Manipulate workflows (e.g., order of API calls)
+- [ ] Test for logic flaws (e.g., purchasing without payment)
+- [ ] Check for IDOR by changing resource IDs
 
-LAB
-APPRENTICE
-Exploiting an API endpoint using documentation
-Solved
-Using machine-readable documentation
-You can use a range of automated tools to analyze any machine-readable API documentation that you find.
+### Automated & Manual Testing
 
-You can use Burp Scanner to crawl and audit OpenAPI documentation, or any other documentation in JSON or YAML format. You can also parse OpenAPI documentation using the OpenAPI Parser BApp.
+- [ ] Use Burp Suite tools (Repeater, Intruder, Scanner)
+- [ ] Use Param Miner and Content Discovery tools
+- [ ] Use Postman/SoapUI for custom requests
 
-You may also be able to use a specialized tool to test the documented endpoints, such as Postman or SoapUI.
+### Error Handling & Information Disclosure
 
-Identifying API endpoints
-You can also gather a lot of information by browsing applications that use the API. This is often worth doing even if you have access to API documentation, as sometimes documentation may be inaccurate or out of date.
+- [ ] Analyze error messages for sensitive info
+- [ ] Check for stack traces, debug info, or verbose errors
 
-You can use Burp Scanner to crawl the application, then manually investigate interesting attack surface using Burp's browser.
+### Prevention & Best Practices (for devs)
 
-While browsing the application, look for patterns that suggest API endpoints in the URL structure, such as /api/. Also look out for JavaScript files. These can contain references to API endpoints that you haven't triggered directly via the web browser. Burp Scanner automatically extracts some endpoints during crawls, but for a more heavyweight extraction, use the JS Link Finder BApp. You can also manually review JavaScript files in Burp.
+- [ ] Secure and restrict API documentation
+- [ ] Allowlist HTTP methods and parameters
+- [ ] Validate and sanitize all input and output
+- [ ] Use generic error messages
+- [ ] Apply security controls to all API versions
 
-Interacting with API endpoints
-Once you've identified API endpoints, interact with them using Burp Repeater and Burp Intruder. This enables you to observe the API's behavior and discover additional attack surface. For example, you could investigate how the API responds to changing the HTTP method and media type.
+---
 
-As you interact with the API endpoints, review error messages and other responses closely. Sometimes these include information that you can use to construct a valid HTTP request.
+## Practical API Testing Techniques
 
-Identifying supported HTTP methods
-The HTTP method specifies the action to be performed on a resource. For example:
+### Crawling and Reconnaissance
 
-GET - Retrieves data from a resource.
-PATCH - Applies partial changes to a resource.
-OPTIONS - Retrieves information on the types of request methods that can be used on a resource.
-An API endpoint may support different HTTP methods. It's therefore important to test all potential methods when you're investigating API endpoints. This may enable you to identify additional endpoint functionality, opening up more attack surface.
+- Use **Burp Scanner** to crawl the application and manually investigate interesting attack surfaces using Burp's browser.
+- Look for patterns in URLs (e.g., `/api/`) and review JavaScript files for references to hidden endpoints. Use the **JS Link Finder BApp** for deeper extraction.
 
-For example, the endpoint /api/tasks may support the following methods:
+### Interacting with API Endpoints
 
-GET /api/tasks - Retrieves a list of tasks.
-POST /api/tasks - Creates a new task.
-DELETE /api/tasks/1 - Deletes a task.
-You can use the built-in HTTP verbs list in Burp Intruder to automatically cycle through a range of methods.
+- Use **Burp Repeater** and **Burp Intruder** to interact with endpoints, observe behavior, and discover additional attack surface.
+- Review error messages and responses closely for clues to construct valid HTTP requests.
 
-Note
-When testing different HTTP methods, target low-priority objects. This helps make sure that you avoid unintended consequences, for example altering critical items or creating excessive records.
+### Identifying Supported HTTP Methods
 
-Identifying supported content types
-API endpoints often expect data in a specific format. They may therefore behave differently depending on the content type of the data provided in a request. Changing the content type may enable you to:
+The HTTP method specifies the action to be performed on a resource:
 
-Trigger errors that disclose useful information.
-Bypass flawed defenses.
-Take advantage of differences in processing logic. For example, an API may be secure when handling JSON data but susceptible to injection attacks when dealing with XML.
-To change the content type, modify the Content-Type header, then reformat the request body accordingly. You can use the Content type converter BApp to automatically convert data submitted within requests between XML and JSON.
+- `GET` – Retrieves data from a resource.
+- `PATCH` – Applies partial changes to a resource.
+- `OPTIONS` – Retrieves information on supported request methods.
 
-LAB
-PRACTITIONER
-Finding and exploiting an unused API endpoint
-Not solved
-Using Intruder to find hidden endpoints
-Once you have identified some initial API endpoints, you can use Intruder to uncover hidden endpoints. For example, consider a scenario where you have identified the following API endpoint for updating user information:
+Test all potential methods for each endpoint. For example:
 
-PUT /api/user/update
+```http
+GET /api/tasks      # Retrieves a list of tasks
+POST /api/tasks     # Creates a new task
+DELETE /api/tasks/1 # Deletes a task
+```
 
-To identify hidden endpoints, you could use Burp Intruder to find other resources with the same structure. For example, you could add a payload to the /update position of the path with a list of other common functions, such as delete and add.
+> **Note:** When testing different HTTP methods, target low-priority objects to avoid unintended consequences.
 
-When looking for hidden endpoints, use wordlists based on common API naming conventions and industry terms. Make sure you also include terms that are relevant to the application, based on your initial recon.
+### Identifying Supported Content Types
 
-Finding hidden parameters
-When you're doing API recon, you may find undocumented parameters that the API supports. You can attempt to use these to change the application's behavior. Burp includes numerous tools that can help you identify hidden parameters:
+- APIs may expect data in specific formats (JSON, XML, etc.). Changing the `Content-Type` may trigger errors, bypass defenses, or exploit logic flaws.
+- Use the **Content type converter BApp** to convert data between XML and JSON.
 
-Burp Intruder enables you to automatically discover hidden parameters, using a wordlist of common parameter names to replace existing parameters or add new parameters. Make sure you also include names that are relevant to the application, based on your initial recon.
-The Param miner BApp enables you to automatically guess up to 65,536 param names per request. Param miner automatically guesses names that are relevant to the application, based on information taken from the scope.
-The Content discovery tool enables you to discover content that isn't linked from visible content that you can browse to, including parameters.
-Mass assignment vulnerabilities
-Mass assignment (also known as auto-binding) can inadvertently create hidden parameters. It occurs when software frameworks automatically bind request parameters to fields on an internal object. Mass assignment may therefore result in the application supporting parameters that were never intended to be processed by the developer.
+### Finding Hidden Endpoints and Parameters
 
-Identifying hidden parameters
-Since mass assignment creates parameters from object fields, you can often identify these hidden parameters by manually examining objects returned by the API.
+- Use **Burp Intruder** with wordlists to fuzz for hidden endpoints and parameters.
+- Use **Param Miner BApp** to guess parameter names.
+- Use the **Content discovery tool** to find unlinked content and parameters.
 
-For example, consider a PATCH /api/users/ request, which enables users to update their username and email, and includes the following JSON:
+### Mass Assignment Vulnerabilities
 
+> Mass assignment (auto-binding) can create hidden parameters by binding request parameters to internal object fields.
+
+**Example:**
+
+```json
+// PATCH /api/users/
 {
-"username": "wiener",
-"email": "wiener@example.com",
+  "username": "wiener",
+  "email": "wiener@example.com"
 }
-A concurrent GET /api/users/123 request returns the following JSON:
-
+// GET /api/users/123
 {
-"id": 123,
-"name": "John Doe",
-"email": "john@example.com",
-"isAdmin": "false"
+  "id": 123,
+  "name": "John Doe",
+  "email": "john@example.com",
+  "isAdmin": "false"
 }
-This may indicate that the hidden id and isAdmin parameters are bound to the internal user object, alongside the updated username and email parameters.
+```
 
-Testing mass assignment vulnerabilities
-To test whether you can modify the enumerated isAdmin parameter value, add it to the PATCH request:
+**Testing:**
 
+```json
+// Try adding isAdmin to PATCH request
 {
-"username": "wiener",
-"email": "wiener@example.com",
-"isAdmin": false,
+  "username": "wiener",
+  "email": "wiener@example.com",
+  "isAdmin": true
 }
-In addition, send a PATCH request with an invalid isAdmin parameter value:
+```
 
+If the user is granted admin privileges, the API is vulnerable.
+
+### Preventing Mass Assignment
+
+- Allowlist properties that can be updated by the user.
+- Blocklist sensitive properties.
+
+---
+
+## Server-Side Parameter Pollution (SSPP)
+
+> Server-side parameter pollution occurs when user input is embedded in a server-side request to an internal API without adequate encoding.
+
+**Impacts:**
+
+- Override existing parameters
+- Modify application behavior
+- Access unauthorized data
+
+**Test all user input** (query params, form fields, headers, URL path params) for pollution.
+
+### Testing for SSPP in Query Strings
+
+- Inject query syntax characters like `#`, `&`, and `=` into your input and observe the response.
+
+**Example:**
+
+```http
+GET /userSearch?name=peter%23foo&back=/home
+# Server-side request: GET /users/search?name=peter#foo&publicProfile=true
+```
+
+> **Note:** URL-encode the `#` character so it is passed to the internal API.
+
+### Injecting Parameters
+
+- Add a second parameter using URL-encoded `&`:
+
+```http
+GET /userSearch?name=peter%26foo=xyz&back=/home
+# Server-side: GET /users/search?name=peter&foo=xyz&publicProfile=true
+```
+
+### Overriding Parameters
+
+- Inject a second parameter with the same name:
+
+```http
+GET /userSearch?name=peter%26name=carlos&back=/home
+# Server-side: GET /users/search?name=peter&name=carlos&publicProfile=true
+```
+
+> **Tech Note:**
+>
+> - PHP: last parameter wins
+> - Node.js/Express: first parameter wins
+> - ASP.NET: combines both
+
+### SSPP in REST Paths
+
+- Add path traversal sequences to manipulate server-side URL path parameters:
+
+```http
+GET /edit_profile.php?name=peter%2f..%2fadmin
+# Server-side: GET /api/private/users/peter/../admin
+```
+
+### SSPP in Structured Data (JSON/XML)
+
+- Inject unexpected structured data into user inputs and observe the server's response.
+
+**Example:**
+
+```json
+// POST /myaccount
 {
-"username": "wiener",
-"email": "wiener@example.com",
-"isAdmin": "foo",
+  "name": "peter",
+  "access_level": "administrator"
 }
-If the application behaves differently, this may suggest that the invalid value impacts the query logic, but the valid value doesn't. This may indicate that the parameter can be successfully updated by the user.
+// Server-side: {"name":"peter","access_level":"administrator"}
+```
 
-You can then send a PATCH request with the isAdmin parameter value set to true, to try and exploit the vulnerability:
+### Detecting SSPP with Tools
 
-{
-"username": "wiener",
-"email": "wiener@example.com",
-"isAdmin": true,
-}
-If the isAdmin value in the request is bound to the user object without adequate validation and sanitization, the user wiener may be incorrectly granted admin privileges. To determine whether this is the case, browse the application as wiener to see whether you can access admin functionality.
+- **Burp Scanner**: Detects suspicious input transformations.
+- **Backslash Powered Scanner BApp**: Classifies inputs as boring, interesting, or vulnerable.
 
-LAB
-PRACTITIONER
-Exploiting a mass assignment vulnerability
-Not solved
-Preventing vulnerabilities in APIs
-When designing APIs, make sure that security is a consideration from the beginning. In particular, make sure that you:
+### Preventing SSPP
 
-Secure your documentation if you don't intend your API to be publicly accessible.
-Ensure your documentation is kept up to date so that legitimate testers have full visibility of the API's attack surface.
-Apply an allowlist of permitted HTTP methods.
-Validate that the content type is expected for each request or response.
-Use generic error messages to avoid giving away information that may be useful for an attacker.
-Use protective measures on all versions of your API, not just the current production version.
-To prevent mass assignment vulnerabilities, allowlist the properties that can be updated by the user, and blocklist sensitive properties that shouldn't be updated by the user.
+- Use an allowlist for characters that don't need encoding.
+- Encode all other user input before including it in server-side requests.
+- Ensure all input adheres to the expected format and structure.
+
+---
+
+## References
+
+- [OWASP API Security Top 10](https://owasp.org/www-project-api-security/)
+- [PortSwigger Web Security Academy](https://portswigger.net/web-security)
